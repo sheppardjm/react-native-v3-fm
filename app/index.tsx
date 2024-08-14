@@ -1,8 +1,16 @@
-import { StyleSheet, TextInput, FlatList, View, Text } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  FlatList,
+  View,
+  Text,
+  LayoutAnimation,
+} from "react-native";
 import { theme } from "../theme";
 import { ShoppingListItem } from "../components/ShoppingListItem";
 import { useEffect, useState } from "react";
 import { getFromStorage, saveToStorage } from "../utils/storage";
+import * as Haptics from "expo-haptics";
 
 const storageKey = "shopping-list";
 
@@ -21,6 +29,7 @@ export default function App() {
     const fetchInitial = async () => {
       const data = await getFromStorage(storageKey);
       if (data) {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setShoppingList(data);
       }
     };
@@ -37,6 +46,7 @@ export default function App() {
         },
         ...shoppingList,
       ];
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setShoppingList(newShoppingList);
       saveToStorage(storageKey, newShoppingList);
       setValue(undefined);
@@ -45,12 +55,18 @@ export default function App() {
 
   const handleDelete = (id: string) => {
     const newShoppingList = shoppingList.filter((item) => item.id !== id);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setShoppingList(newShoppingList);
   };
 
   const handleToggleComplete = (id: string) => {
     const newShoppingList = shoppingList.map((item) => {
       if (item.id === id) {
+        if (item.completedAtTimestamp) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        } else {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }
         return {
           ...item,
           completedAtTimestamp: item.completedAtTimestamp
@@ -62,6 +78,7 @@ export default function App() {
         return item;
       }
     });
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setShoppingList(newShoppingList);
     saveToStorage(storageKey, newShoppingList);
   };
