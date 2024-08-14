@@ -9,7 +9,7 @@ type Props = {
 export function ShoppingListItem({ name, isCompleted }: Props) {
   const handleDelete = () => {
     Alert.alert(
-      "Are you sure you want to delete this?",
+      `Are you sure you want to delete ${name}?`,
       "It will be gone for good",
       [
         {
