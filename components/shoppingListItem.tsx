@@ -1,4 +1,6 @@
-import { Alert, View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View, Alert, StyleSheet, Text } from "react-native";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Entypo from "@expo/vector-icons/Entypo";
 import { theme } from "../theme";
 
 type Props = {
@@ -21,6 +23,7 @@ export function ShoppingListItem({ name, isCompleted }: Props) {
       ]
     );
   };
+
   return (
     <View
       style={[
@@ -28,27 +31,27 @@ export function ShoppingListItem({ name, isCompleted }: Props) {
         isCompleted ? styles.completedContainer : undefined,
       ]}
     >
-      <Text
-        style={[
-          styles.itemText,
-          isCompleted ? styles.completedText : undefined,
-        ]}
-      >
-        {name}
-      </Text>
-      <TouchableOpacity
-        onPress={handleDelete}
-        style={styles.button}
-        activeOpacity={0.8}
-      >
+      <View style={styles.row}>
+        <Entypo
+          name={isCompleted ? "check" : "circle"}
+          size={24}
+          color={isCompleted ? theme.colorGrey : theme.colorCerulean}
+        />
         <Text
           style={[
-            styles.buttonText,
-            isCompleted ? styles.completedButtonText : undefined,
+            styles.itemText,
+            isCompleted ? styles.completedText : undefined,
           ]}
         >
-          Delete
+          {name}
         </Text>
+      </View>
+      <TouchableOpacity hitSlop={20} onPress={handleDelete}>
+        <AntDesign
+          name="closecircle"
+          size={24}
+          color={isCompleted ? theme.colorGrey : theme.colorRed}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -57,36 +60,31 @@ export function ShoppingListItem({ name, isCompleted }: Props) {
 const styles = StyleSheet.create({
   itemContainer: {
     paddingVertical: 16,
-    paddingHorizontal: 8,
+    paddingHorizontal: 18,
     borderBottomColor: theme.colorCerulean,
     borderBottomWidth: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  completedContainer: {
-    backgroundColor: theme.colorLightGrey,
-    borderBottomColor: theme.colorGrey,
-  },
   itemText: {
     fontSize: 18,
     fontWeight: "200",
+    marginLeft: 8,
+    flex: 1,
+  },
+  completedContainer: {
+    backgroundColor: theme.colorLightGrey,
+    borderBottomColor: theme.colorLightGrey,
   },
   completedText: {
-    textDecorationLine: "line-through",
-  },
-  button: {
-    backgroundColor: theme.colorBlack,
-    padding: 8,
-    borderRadius: 6,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    letterSpacing: 1,
-  },
-  completedButtonText: {
     color: theme.colorGrey,
+    textDecorationLine: "line-through",
+    textDecorationColor: theme.colorGrey,
+  },
+  row: {
+    flexDirection: "row",
+    flex: 1,
+    alignItems: "center",
   },
 });
